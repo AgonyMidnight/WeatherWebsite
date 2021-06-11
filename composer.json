@@ -9,8 +9,11 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "jenssegers/agent": "^2.6",
         "laravel/framework": "^8.40",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "mobiledetect/mobiledetectlib": "^2.8",
+        "ext-curl": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
