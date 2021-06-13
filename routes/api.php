@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('get/weather', [App\Http\Controllers\Api\WeatherController::class, 'setWeather']);
+Route::post('get/weather/map', [App\Http\Controllers\Api\WeatherController::class, 'setMapWeather']);

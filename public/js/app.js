@@ -1868,6 +1868,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* provided dependency */ var process = __webpack_require__(/*! process/browser */ "./node_modules/process/browser.js");
+//
+//
+//
+//
 //
 //
 //
@@ -1895,9 +1900,11 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       apiIp: "https://api.ipgeolocation.io/ipgeo?apiKey=3f171e88099c432180e73f0ef6f16a22",
+      apiGoogle: process.env.MIX_GOOGLE_API,
       ip: "",
       city: "finding",
-      layer: ["clouds_new", "precipitation_new", "pressure_new", "wind_new", "temp_new"],
+      mapImg: "",
+      layer: ["temp_new", "clouds_new", "precipitation_new", "pressure_new", "wind_new"],
       latitude: 0,
       longitude: 0,
       weather: {
@@ -1927,6 +1934,7 @@ __webpack_require__.r(__webpack_exports__);
         'longitude': _this.longitude
       }).then(function (response) {
         _this.weather = response.data.data;
+        _this.mapImg = "https://tile.openweathermap.org/map/temp_new/5/47/38.png?appid=c3f93d23f4afc931f07743b1f8a9ffc6";
         console.log(response.data); //this.showWeather(response.data.data)
       });
     });
@@ -19770,6 +19778,15 @@ var render = function() {
     _c("br"),
     _vm._v(" "),
     _c("div", [_vm._v("тут тип карта")]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("div", [
+      _vm.mapImg
+        ? _c("img", { attrs: { src: _vm.mapImg, alt: "" } })
+        : _vm._e(),
+      _vm._v("\n        " + _vm._s(_vm.mapImg) + "\n    ")
+    ]),
     _vm._v(" "),
     _c("br"),
     _vm._v(" "),

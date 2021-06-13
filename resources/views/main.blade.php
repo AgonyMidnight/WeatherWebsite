@@ -14,3 +14,5 @@
 <script src="./js/app.js"></script>
 </body>
 </html>
+<script type="text/javascript"
+        src=`https://maps.googleapis.com/maps/api/js?client=AIzaSyBvfga_QnfV6_X7-Uea6uzw6HVU5x74f3s`></script>

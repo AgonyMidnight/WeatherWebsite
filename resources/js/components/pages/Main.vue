@@ -7,6 +7,11 @@
         <div>тут тип карта</div>
         <br>
         <div>
+            <img v-if="mapImg" :src="mapImg" alt="">
+            {{mapImg}}
+        </div>
+        <br>
+        <div>
             <h3> {{weather.main}}</h3>
             <span> Temperature: {{weather.temp}}</span>
             <span> Feels like: {{weather.feels_like}}</span>
@@ -19,16 +24,17 @@
         </div>
     </div>
 </template>
-
 <script>
   export default {
     name: "Main",
     data: function () {
       return {
         apiIp: process.env.MIX_API_IP,
+        apiGoogle: process.env.MIX_GOOGLE_API,
         ip: "",
         city: "finding",
-        layer: ["clouds_new", "precipitation_new", "pressure_new", "wind_new", "temp_new"],
+        mapImg: "",
+        layer: ["temp_new", "clouds_new", "precipitation_new", "pressure_new", "wind_new"],
         latitude : 0,
         longitude: 0,
 
@@ -56,8 +62,10 @@
                 'longitude': this.longitude})
           .then((response) => {
             this.weather = response.data.data
+            this.mapImg = "https://tile.openweathermap.org/map/temp_new/5/47/38.png?appid=c3f93d23f4afc931f07743b1f8a9ffc6"
           console.log(response.data)
           //this.showWeather(response.data.data)
+
         })
       })
 
