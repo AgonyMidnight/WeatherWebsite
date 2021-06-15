@@ -41,10 +41,7 @@
       });
       this.google = googleMapApi;
       this.initializeMap();
-      //this.map = new  this.google.maps.Map(document.querySelector('#map-canvas'), this.mapOptions);
       this.google.maps.event.addListener(this.map, 'idle', this.checkIfDataRequested);
-      //this.infoWindow = new  this.google.maps.InfoWindow();
-      //this.google.maps.event.addDomListener(window, 'load',  this.initializeMap());
     },
 
     methods: {
@@ -85,15 +82,12 @@
         this.getCoords();
       },
       getCoords() {
-
         let bounds = this.map.getBounds();
-
         let NE = bounds.getNorthEast();
         let SW = bounds.getSouthWest();
         this.getWeather(NE.lat(), NE.lng(), SW.lat(), SW.lng());
       },
       getWeather(northLat, eastLng, southLat, westLng) {
-        console.log('getWeather');
         this.gettingData = true;
         let requestString = "http://api.openweathermap.org/data/2.5/box/city?bbox="
           + westLng + "," + northLat + "," //left top
@@ -101,21 +95,14 @@
           + this.map.getZoom()
           + "&cluster=yes&format=json"
           + "&APPID=" + this.apiOpenWeather;
-        console.log(1)
         this.request = new XMLHttpRequest();
-        console.log(this.request)
-        console.log(2)
         this.request.onload = this.proccessResults;
-        console.log(3)
         this.request.open("get", requestString, true);
-        console.log(4)
         this.request.send();
-        console.log(5)
       },
       proccessResults() {
-        console.log(this)
         let results = JSON.parse(this.request.responseText);
-        if (results.list.length > 0) {
+        if (results.list && results.list.length > 0) {
           this.resetData();
           for (let i = 0; i < results.list.length; i++) {
             this.geoJSON.features.push(this.jsonToGeoJson(results.list[i]));
@@ -129,14 +116,6 @@
           properties: {
             city: weatherItem.name,
             weather: weatherItem.weather[0].main,
-            temperature: weatherItem.main.temp,
-            min: weatherItem.main.temp_min,
-            max: weatherItem.main.temp_max,
-            humidity: weatherItem.main.humidity,
-            pressure: weatherItem.main.pressure,
-            windSpeed: weatherItem.wind.speed,
-            windDegrees: weatherItem.wind.deg,
-            windGust: weatherItem.wind.gust,
             icon: "http://openweathermap.org/img/w/"
               + weatherItem.weather[0].icon + ".png",
             coordinates: [weatherItem.coord.Lon, weatherItem.coord.Lat]
@@ -160,7 +139,6 @@
       },
       drawIcons(){
         this.map.data.addGeoJson(this.geoJSON);
-
         this.gettingData = false;
       },
       resetData(){
@@ -168,7 +146,6 @@
           type: "FeatureCollection",
           features: []
         };
-        console.log(1, this.map.data)
         this.map.data.forEach((feature) => {
           this.map.data.remove(feature);
         });

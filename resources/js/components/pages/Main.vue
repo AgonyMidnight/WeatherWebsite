@@ -1,30 +1,30 @@
 <template>
-    <div>
-        <div>
-            <span>Your town: {{city}}</span>
+    <div class="container mt-3">
+        <div id="city" @click="chooseCity">
+            <span>Your town: <strong>{{city}}</strong></span>
+            <div v-if="choose" class="flex align-content-center justify-content-center">
+                <input v-model="newCity" placeholder="enter your city" id="inputCity">
+                <button @click="getWeather" class="btn btn-primary" id="btnFind">Find</button>
+            </div>
         </div>
         <br>
-        <div>
-            Map:
-            <Map></Map>
-            <hr>
+        <div id="weatherMap">
+            <Map :coords="{lat:latitude, lng:longitude}" v-if="!update"></Map>
         </div>
         <br>
-        <div>
-            <img v-if="mapImg" :src="mapImg" alt="">
-            {{mapImg}}
-        </div>
         <br>
-        <div>
-            <h3> {{weather.main}}</h3>
-            <span> Temperature: {{weather.temp}}</span>
-            <span> Feels like: {{weather.feels_like}}</span>
-            <span> Humidity: {{weather.humidity}}</span>
-            <span> Pressure {{weather.pressure}}</span>
-            <span v-if="weather.rain" > Precipitation: Rain</span>
-            <span v-if="weather.snow">Precipitation: Snow </span>
-            <span> {{weather.wind_deg}}</span>
-            <span> {{weather.wind_speed}}</span>
+        <div id="weatherList">
+            <ul class="list-group">
+                <li class="list-group-item"> <h3>{{weather.main}}</h3></li>
+                <li class="list-group-item"> Temperature: {{weather.temp}}</li>
+                <li class="list-group-item"> Feels like: {{weather.feels_like}}</li>
+                <li class="list-group-item"> Humidity: {{weather.humidity}}</li>
+                <li class="list-group-item"> Pressure: {{weather.pressure}}</li>
+                <li class="list-group-item" v-if="weather.rain"> Precipitation: Rain</li>
+                <li class="list-group-item" v-if="weather.snow"> Precipitation: Snow </li>
+                <li class="list-group-item"> Wind: {{weather.wind_deg}}</li>
+                <li class="list-group-item"> Speed: {{weather.wind_speed}}</li>
+            </ul>
         </div>
     </div>
 </template>
@@ -40,10 +40,11 @@
         apiGoogle: process.env.MIX_GOOGLE_API,
         ip: "",
         city: "finding",
-        mapImg: "",
-        layer: ["temp_new", "clouds_new", "precipitation_new", "pressure_new", "wind_new"],
-        latitude : 0,
+        newCity: null,
+        latitude: 0,
         longitude: 0,
+        update: false,
+        weatherValue: ['Temperature', 'Feels like', 'Humidity', 'Pressure', 'Precipitation', 'Precipitation', 'Wind', 'Speed'],
         weather: {
           temp: "",
           feels_like: "",
@@ -55,36 +56,62 @@
           wind_deg: "",
           wind_speed: "",
         },
+        choose: false
+        ,
       }
     },
-    created: function(){
+    created: function () {
       this.axios.get(this.apiIp).then((response) => {
         this.city = response.data.city
-        this.latitude = response.data.latitude
-        this.longitude = response.data.longitude
-        this.axios.post('api/get/weather',
-          {'city':this.city,
-                'latitude': this.latitude,
-                'longitude': this.longitude})
-          .then((response) => {
-            this.weather = response.data.data
-            this.mapImg = ""
-            //this.mapImg = "https://tile.openweathermap.org/map/temp_new/5/47/38.png?appid=c3f93d23f4afc931f07743b1f8a9ffc6"
-          console.log(response.data)
-          //this.showWeather(response.data.data)
-
-        })
+        this.getWeather()
       })
-
     },
-    methods:{
+    methods: {
+      chooseCity(){
+        this.choose = true
+      },
+      getWeather(){
+        if(this.newCity != null){
+          this.city = this.newCity
+          this.newCity = null
+        }
+          this.axios.post('api/get/weather',
+            {
+              'city': this.city,
+            })
+            .then((response) => {
+              this.weather = response.data.data
+              this.latitude = Number(response.data.coords.lat)
+              this.longitude = Number(response.data.coords.lon)
+              this.update = true;
+              this.$nextTick(() => {
+                this.update= false;
+              });
+            })
 
+        }
+      }
     }
-  }
 </script>
 
 <style scoped>
-span {
-    display: block;
-}
+    #inputCity{
+        border-radius: 10px;
+    }
+    #btnFind {
+
+
+    }
+    #weatherList {
+        width: 50%;
+
+        min-height: 30%;
+    }
+    #weatherMap{
+        width: 70%;
+        min-height: 50%;
+    }
+    span {
+        display: block;
+    }
 </style>

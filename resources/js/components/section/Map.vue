@@ -4,7 +4,7 @@
             :apiKey="apiKey"
             class="dd"
     >
-
+    {{coords}}
     </GoogleMapLoader>
 </template>
 
@@ -17,6 +17,9 @@
     components: {
       GoogleMapLoader,
     },
+    props: {
+      coords: Object,
+    },
     data() {
       return {
         apiKey: process.env.MIX_GOOGLE_API,
@@ -27,7 +30,7 @@
       mapConfig() {
         return {
           ...mapSettings,
-          center: { lat: 47.23, lng: 38.9 }
+          center: { lat: this.coords.lat, lng: this.coords.lng }
         };
       },
 
