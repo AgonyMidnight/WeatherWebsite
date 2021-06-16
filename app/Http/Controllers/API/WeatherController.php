@@ -29,7 +29,7 @@ class WeatherController extends Controller
                 return response()->json(["data" => $weatherCorrectForm, "coords" => $coords]);
             }
         } catch (Throwable $throwable) {
-            return response()->json(["errors" => "Location not found"]);
+            return response()->json(["error" => "Location not found"]);
         }
     }
 
@@ -38,15 +38,16 @@ class WeatherController extends Controller
     {
         $deg = null;
         $ag = 22.5;
+        if ($weatherData['list'][0]['wind']['deg'] >337.5) $deg =  'Northerly';
+        else if ($weatherData['list'][0]['wind']['deg'] >292.5) $deg =  'North Westerly';
+        else if($weatherData['list'][0]['wind']['deg'] >247.5)  $deg = 'Westerly';
+        else if($weatherData['list'][0]['wind']['deg'] >202.5)  $deg = 'South Westerly';
+        else if($weatherData['list'][0]['wind']['deg'] >157.5)  $deg = 'Southerly';
+        else if($weatherData['list'][0]['wind']['deg'] >122.5)  $deg = 'South Easterly';
+        else if($weatherData['list'][0]['wind']['deg'] >67.5)  $deg = 'Easterly';
+        else if($weatherData['list'][0]['wind']['deg'] >22.5)$deg = 'North Easterly';
+        else  $deg = 'Northerly';
 
-        if($weatherData['list'][0]['wind']['deg'] < $ag) $deg = 'Northern';
-        else if($weatherData['list'][0]['wind']['deg'] < $ag+=44) $deg = 'Northeastern';
-        else if($weatherData['list'][0]['wind']['deg'] < $ag+=44) $deg = 'Eastern ';
-        else if($weatherData['list'][0]['wind']['deg'] < $ag+=44) $deg = 'southeastern';
-        else if($weatherData['list'][0]['wind']['deg'] < $ag+=44) $deg = 'southern';
-        else if($weatherData['list'][0]['wind']['deg'] < $ag+=44) $deg = 'Southwestern';
-        else if($weatherData['list'][0]['wind']['deg'] < $ag+=44) $deg = 'Northwestern';
-        else $deg = 'Northern';
         return [
             'temp' => round(($weatherData['list'][0]['main']['temp'] - 273.15)) . ' °C',
             'feels_like' => round(($weatherData['list'][0]['main']['feels_like'] - 273.15)) . ' °C',
@@ -54,7 +55,8 @@ class WeatherController extends Controller
             'pressure' => round($weatherData['list'][0]['main']['pressure'] * 0.75) . ' mm Hg',
             'main' => $weatherData['list'][0]['weather'][0]['main'],
             'wind_deg' => $deg,
-            'wind_speed' => $weatherData['list'][0]['wind']['speed'].'m/sec'
+            'wind_speed' => $weatherData['list'][0]['wind']['speed'].'m/sec',
+            'description' => $weatherData['list'][0]['weather'][0]['description']
         ];
 
     }

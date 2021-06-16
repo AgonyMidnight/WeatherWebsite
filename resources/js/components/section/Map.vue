@@ -4,7 +4,6 @@
             :apiKey="apiKey"
             class="dd"
     >
-    {{coords}}
     </GoogleMapLoader>
 </template>
 
