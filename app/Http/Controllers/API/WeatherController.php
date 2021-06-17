@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Traits\UserDataTrait;
-use Illuminate\Http\Request;
+
+
 use Illuminate\Http\Client\Pool;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Throwable;
 
@@ -16,9 +18,12 @@ class WeatherController extends Controller
 
     public function setWeather(Request $request)
     {
+        $data = $this->getDataUser($request);
+        $city = ($request->city == 'finding')? $data['city']:$request->city;
         try {
             $curl_handle = curl_init();
-            curl_setopt($curl_handle, CURLOPT_URL, 'http://api.openweathermap.org/data/2.5/find?q=' . $request->city . '&type=like&APPID=' . env('MIX_OPENWEATHER_KEY'));
+            curl_setopt($curl_handle, CURLOPT_URL,
+                'http://api.openweathermap.org/data/2.5/find?q=' . $city. '&type=like&APPID=' . env('MIX_OPENWEATHER_KEY'));
             curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 5);
             curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
             $weatherData = json_decode(curl_exec($curl_handle), true);
@@ -26,7 +31,7 @@ class WeatherController extends Controller
             if ($weatherData['cod'] == 200) {
                 $weatherCorrectForm = $this->setCorrectForm($weatherData);
                 $coords = $weatherData['list'][0]['coord'];
-                return response()->json(["data" => $weatherCorrectForm, "coords" => $coords]);
+                return response()->json(["data" => $weatherCorrectForm, "coords" => $coords, 'city' => $city],);
             }
         } catch (Throwable $throwable) {
             return response()->json(["error" => "Location not found"]);
@@ -37,7 +42,6 @@ class WeatherController extends Controller
     private function setCorrectForm($weatherData)
     {
         $deg = null;
-        $ag = 22.5;
         if ($weatherData['list'][0]['wind']['deg'] >337.5) $deg =  'Northerly';
         else if ($weatherData['list'][0]['wind']['deg'] >292.5) $deg =  'North Westerly';
         else if($weatherData['list'][0]['wind']['deg'] >247.5)  $deg = 'Westerly';
@@ -58,6 +62,5 @@ class WeatherController extends Controller
             'wind_speed' => $weatherData['list'][0]['wind']['speed'].'m/sec',
             'description' => $weatherData['list'][0]['weather'][0]['description']
         ];
-
     }
 }

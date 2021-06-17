@@ -61,10 +61,7 @@
       }
     },
     created: function () {
-      this.axios.get(this.apiIp).then((response) => {
-        this.city = response.data.city
         this.getWeather()
-      })
     },
     methods: {
       chooseCity() {
@@ -76,18 +73,14 @@
           this.city = this.newCity
           this.newCity = null
         }
-        this.axios.post('api/get/weather',
-          {
-            'city': this.city,
-          })
+        this.axios.post('api/get/weather',{'city':this.city})
           .then((response) => {
             if (response.data.error) {
-              console.log(response.data.error)
               this.error = true;
               this.errorMessage = response.data.error;
-              console.log(response.data.error)
               this.resetData();
             } else {
+              this.city =  response.data.city
               this.weather = response.data.data
               this.latitude = Number(response.data.coords.lat)
               this.longitude = Number(response.data.coords.lon)
@@ -125,7 +118,6 @@
 
     #city span:hover {
         color: #b44f1e !important;
-        font-size: 2vw;
     }
 
     h3 {
@@ -148,9 +140,9 @@
     }
 
     #weatherList {
+        display: inline-block;
         border: 2px solid #d4a752;
         font-size: 20px;
-        width: 50%;
         height: 30%;
         margin: 20px;
     }
