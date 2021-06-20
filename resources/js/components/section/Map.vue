@@ -2,7 +2,7 @@
     <GoogleMapLoader
             :mapConfig="mapConfig"
             :apiKey="apiKey"
-            class="dd"
+            class="height-500"
     >
     </GoogleMapLoader>
 </template>
@@ -38,7 +38,7 @@
 </script>
 
 <style scoped>
-.dd {
+.height-500 {
     height: 500px;
 }
 </style>
